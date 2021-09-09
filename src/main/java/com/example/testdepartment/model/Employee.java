@@ -4,7 +4,7 @@ public class Employee {
     private Long id;
     private String name;
     private Boolean active;
-    private Long departmentId;
+    private Department department;
 
     public Long getId() {
         return id;
@@ -30,11 +30,11 @@ public class Employee {
         this.active = active;
     }
 
-    public Long getDepartmentId() {
-        return departmentId;
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

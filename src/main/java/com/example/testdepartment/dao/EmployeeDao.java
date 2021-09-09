@@ -1,6 +1,5 @@
 package com.example.testdepartment.dao;
 
-import com.example.testdepartment.model.Department;
 import com.example.testdepartment.model.Employee;
 import java.util.List;
 import java.util.Optional;

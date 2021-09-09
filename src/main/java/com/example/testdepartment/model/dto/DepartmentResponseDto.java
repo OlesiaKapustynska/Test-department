@@ -1,7 +1,5 @@
 package com.example.testdepartment.model.dto;
 
-import com.example.testdepartment.model.Department;
-
 public class DepartmentResponseDto {
     private Long id;
     private String name;
