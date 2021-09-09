@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class EmployeeDaoImpl implements EmployeeDao {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public EmployeeDaoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -41,11 +41,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public Optional<Employee> get(Long id) {
-        String selectQuery = "SELECT e.id, e.name, e.active, e.department_id, d.name AS department_name "
+        String selectQuery = "SELECT e.id, e.name, e.active, e.department_id, "
+                + "d.name AS department_name "
                 + "FROM employees e "
                 + "JOIN departments d "
                 + "ON e.department_id=d.id "
-                + "WHERE d.id = ?";
+                + "WHERE e.id = ?";
         Employee employee = null;
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
@@ -61,14 +62,18 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public List<Employee> getAll() {
-        String selectQuery = "SELECT e.id, e.name, e.active, e.department_id, d.name AS department_name "
+    public List<Employee> getAll(Long pageSize, Long pageNumber) {
+        String selectQuery = "SELECT e.id, e.name, e.active, e.department_id, "
+                + "d.name AS department_name "
                 + "FROM employees e "
                 + "JOIN departments d "
-                + "ON e.department_id=d.id";
+                + "ON e.department_id=d.id "
+                + "LIMIT ? OFFSET ?";
         List<Employee> employees = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            preparedStatement.setLong(1,pageSize);
+            preparedStatement.setLong(2, (pageSize * pageNumber) - pageSize);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 employees.add(parseEmployeeFromResultSet(resultSet));
@@ -80,8 +85,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
     }
 
     @Override
-    public List<Employee> findBySearch(String search) {
-        String selectQuery = "SELECT e.id, e.name, e.active, e.department_id, d.name AS department_name "
+    public List<Employee> findBySearch(String search, Long pageSize, Long pageNumber) {
+        String selectQuery = "SELECT e.id, e.name, e.active, e.department_id, "
+                + "d.name AS department_name "
                 + "FROM employees e "
                 + "JOIN departments d "
                 + "ON e.department_id=d.id "
@@ -133,8 +139,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
         Long id = resultSet.getObject("id", Long.class);
         String employeeName = resultSet.getNString("name");
         Boolean employeeActive = resultSet.getBoolean("active");
-        Long departmentId = resultSet.getObject("department_id", Long.class);
-        String departmentName = resultSet.getString("department_name");
+        final Long departmentId = resultSet.getObject("department_id", Long.class);
+        final String departmentName = resultSet.getString("department_name");
         Employee employee = new Employee();
         employee.setId(id);
         employee.setName(employeeName);

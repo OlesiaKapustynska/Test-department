@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DepartmentDaoImpl implements DepartmentDao {
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     public DepartmentDaoImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -47,7 +47,7 @@ public class DepartmentDaoImpl implements DepartmentDao {
                 + "WHERE id = ?";
         Department department = null;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+                 PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

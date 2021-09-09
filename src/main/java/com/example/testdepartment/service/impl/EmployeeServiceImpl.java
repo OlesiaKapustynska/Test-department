@@ -8,15 +8,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private EmployeeDao employeeDao;
+    private final EmployeeDao employeeDao;
 
     public EmployeeServiceImpl(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
-    }
-
-    @Override
-    public Employee save(Employee employee) {
-        return employeeDao.save(employee);
     }
 
     @Override
@@ -25,13 +20,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<Employee> getAll() {
-        return employeeDao.getAll();
+    public List<Employee> getAll(Long pageSize, Long pageNumber) {
+        return employeeDao.getAll(pageSize, pageNumber);
     }
 
     @Override
-    public List<Employee> findBySearch(String search) {
-        return employeeDao.findBySearch(search);
+    public List<Employee> findBySearch(String search, Long pageSize, Long pageNumber) {
+        return employeeDao.findBySearch(search, pageSize, pageNumber);
     }
 
     @Override

@@ -9,9 +9,9 @@ public interface EmployeeDao {
 
     Optional<Employee> get(Long id);
 
-    List<Employee> getAll();
+    List<Employee> getAll(Long pageSize, Long pageNumber);
 
-    List<Employee> findBySearch(String search);
+    List<Employee> findBySearch(String search, Long pageSize, Long pageNumber);
 
     Employee update(Long id, Employee employee);
 

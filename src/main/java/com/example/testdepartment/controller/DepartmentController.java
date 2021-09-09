@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/departments")
 public class DepartmentController {
-    private DepartmentMapper departmentMapper;
-    private DepartmentService departmentService;
+    private final DepartmentMapper departmentMapper;
+    private final DepartmentService departmentService;
 
     public DepartmentController(DepartmentMapper departmentMapper,
                                 DepartmentService departmentService) {

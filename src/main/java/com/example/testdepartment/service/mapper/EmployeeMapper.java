@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmployeeMapper {
-    private DepartmentService departmentService;
+    private final DepartmentService departmentService;
 
     public EmployeeMapper(DepartmentService departmentService) {
         this.departmentService = departmentService;

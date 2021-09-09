@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface DepartmentDao {
     List<Department> getAll();
+
     Optional<Department> getById(Long id);
 }

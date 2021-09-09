@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,25 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
-    private EmployeeService employeeService;
-    private EmployeeMapper employeeMapper;
+    private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
     public EmployeeController(EmployeeService employeeService, EmployeeMapper employeeMapper) {
         this.employeeService = employeeService;
         this.employeeMapper = employeeMapper;
     }
 
-    @PostMapping
-    @ApiOperation(value = " Adds a new employee ")
-    public EmployeeResponseDto add(@RequestBody EmployeeRequestDto employeeRequestDto) {
-        Employee employee = employeeMapper.mapToModel(employeeRequestDto);
-        return employeeMapper.mapToDto(employeeService.save(employee));
-    }
-
-    @PostMapping("/search")
+    @GetMapping("/{size}/{page}/{search}")
     @ApiOperation(value = " Finds the employees by name/part of the name ")
-    public List<EmployeeResponseDto> search(@RequestBody String search) {
-        return employeeService.findBySearch(search).stream()
+    public List<EmployeeResponseDto> search(@PathVariable String search, @PathVariable Long size,
+                                            @PathVariable Long page) {
+        return employeeService.findBySearch(search, size, page).stream()
                 .map(employeeMapper::mapToDto)
                 .collect(Collectors.toList());
     }
@@ -50,10 +43,10 @@ public class EmployeeController {
         return employeeMapper.mapToDto(employee);
     }
 
-    @GetMapping
+    @GetMapping("/{size}/{page}")
     @ApiOperation(value = " Returns a list of all employees ")
-    public List<EmployeeResponseDto> getAll() {
-        return employeeService.getAll().stream()
+    public List<EmployeeResponseDto> getAll(@PathVariable Long size, @PathVariable Long page) {
+        return employeeService.getAll(size, page).stream()
                 .map(employeeMapper::mapToDto)
                 .collect(Collectors.toList());
     }
@@ -71,7 +64,7 @@ public class EmployeeController {
     @ApiOperation(value = " Makes employees with the specified id not active ")
     public List<EmployeeResponseDto> delete(@PathVariable Long id) {
         employeeService.delete(id);
-        return employeeService.getAll().stream()
+        return employeeService.getAll(0L, 0L).stream()
                 .map(employeeMapper::mapToDto)
                 .collect(Collectors.toList());
     }
